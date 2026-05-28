@@ -1,0 +1,15 @@
+==>> AUthentication 
+   =>register   (1. user create karna , 2 token dena use)
+   => login   (1 check credentials , 2 token re set karna)
+   => logout (token blacklisting)
+   =>Otp based registration 
+  
+==> POST 
+  =>create 
+  => can see the feed 
+  => like posts 
+  => save post
+
+=> user 
+ => followers
+ => following
