@@ -1,6 +1,7 @@
 const crypto = require("crypto")
 const jwt = require('jsonwebtoken')
 const userModel = require("../models/user.model")
+const bcrypt = require("bcryptjs")
 
 async function registerController (req,res){
   const {email , username,password,bio , profileImage} = req.body
@@ -33,7 +34,9 @@ async function registerController (req,res){
     })
   }
 
-  const hash = crypto.createHash('sha256').update(password).digest('hex')
+  // const hash = crypto.createHash('sha256').update(password).digest('hex')
+
+  const hash = await bcrypt.hash(password,10)  // salt -> means kitni layers of hashing perform karni hai 
 
   const user = await userModel.create({
     email , 
@@ -82,7 +85,7 @@ async function loginController (req,res){
     })
   }
 
-  const ismatch = (crypto.createHash('sha256').update(password).digest('hex')=== user.password)
+  const ismatch = await bcrypt.compare(password , user.password)
 
   if(!ismatch){
     return res.status(404).json({

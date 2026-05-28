@@ -13,3 +13,13 @@
 => user 
  => followers
  => following
+
+
+ // ab post me data kaise hoga 
+
+post =>{
+  caption , 
+  img_url , 
+  userid , 
+  createdAt 
+}
