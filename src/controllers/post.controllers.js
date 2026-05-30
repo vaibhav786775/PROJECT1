@@ -79,7 +79,54 @@ async function getPostController(req,res){
   })
 }
 
+/**
+  get /api/posts/details/:postid
+  return an detail abput specific post with the id and also check wheter the post belongs to the user that is requesting
+ */
+
+async function getPostDetails(req,res){
+  const token = req.cookies.token
+
+  if(!token){
+    return res.status(401).json({
+      message : "user not authorised"
+    })
+  }
+
+  let decoded = ""
+  try {
+    decoded = await jwt.verify(token , process.env.JWT_SECRET)
+  } catch (err) {
+    return res.status(401).json({
+      message : "Invalid user"
+    })
+  }
+
+  const userId = decoded.id
+  const postId = req.params.postId
+
+  const post = await postModel.findById(postId)
+
+  if(!post){
+    return res.status(404).json({
+      message : "post not found"
+    })
+  }
+
+  const isValid = (post.user===userId)
+  if(!isValid){
+    return res.status(401).json({
+      message : "Invalid access"
+    })
+  }
+
+  return res.status(200).json({
+    message : "post fetched"
+  })
+}
+
 module.exports = {
   postController , 
-  getPostController
+  getPostController,
+  getPostDetails
 }
