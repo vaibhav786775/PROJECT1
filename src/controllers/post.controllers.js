@@ -11,22 +11,7 @@ async function postController (req,res){
 
   console.log(req.body , req.file)
 
-  const token  = await req.cookies.token
-
-  if(!token){
-    return res.status(401).json({
-      message : "user is not authorised"
-    })
-  }
-
-  let decoded = "";
-  try{
-    decoded = jwt.verify(token , process.env.JWT_SECRET)
-  }catch(err){
-    return res.status(401).json({
-      message : "user not authorized"
-    })
-  }
+  
 
   //  isme if condition use nhi kar skte ......
 
@@ -39,7 +24,7 @@ async function postController (req,res){
   const post = await postModel.create({
     caption : req.body.caption , 
     imgUrl : file.url , 
-    user : decoded.id
+    user : req.user.id
   })
 
   res.status(201).json({
@@ -50,25 +35,8 @@ async function postController (req,res){
 
 async function getPostController(req,res){
 
-  const token = req.cookies.token
-
-  if(!token){
-    return res.status(401).json({
-      message : "User is not authorised"
-    })
-  }
-
-  let decoded = ""
-  try {
-    decoded = await jwt.verify(token , process.env.JWT_SECRET)
-
-  } catch (err) {
-    return res.status(401).json({
-      message : "User is not authorised"
-    })
-  }
-
-  const userId = decoded.id
+  
+  const userId = req.user.id
   const posts = await postModel.find({
     user : userId
   })
@@ -85,25 +53,10 @@ async function getPostController(req,res){
  */
 
 async function getPostDetails(req,res){
-  const token = req.cookies.token
+ 
 
-  if(!token){
-    return res.status(401).json({
-      message : "user not authorised"
-    })
-  }
-
-  let decoded = ""
-  try {
-    decoded = await jwt.verify(token , process.env.JWT_SECRET)
-  } catch (err) {
-    return res.status(401).json({
-      message : "Invalid user"
-    })
-  }
-
-  const userId = decoded.id
-  const postId = req.params.postId
+  const userId = req.user.id
+  const postId = await req.params.postId
 
   const post = await postModel.findById(postId)
 
@@ -113,7 +66,7 @@ async function getPostDetails(req,res){
     })
   }
 
-  const isValid = (post.user===userId)
+  const isValid = ((post.user.toString())===userId)
   if(!isValid){
     return res.status(401).json({
       message : "Invalid access"
@@ -121,7 +74,8 @@ async function getPostDetails(req,res){
   }
 
   return res.status(200).json({
-    message : "post fetched"
+    message : "post fetched",
+    post 
   })
 }
 

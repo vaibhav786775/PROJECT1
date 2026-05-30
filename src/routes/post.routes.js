@@ -2,6 +2,7 @@ const express = require("express")
 const { postController, getPostController , getPostDetails} = require("../controllers/post.controllers")
 const postRouter = express.Router()
 const multer = require("multer")
+const { identifyUser } = require("../middleware/auth.middleware")
 const upload = multer({storage : multer.memoryStorage()})
 
 //  post creat karni h 
@@ -11,9 +12,9 @@ const upload = multer({storage : multer.memoryStorage()})
 //  ye as a middle ware use ho rha hai
 
 
-postRouter.post("/" ,upload.single("image"), postController )
-postRouter.get('/',getPostController)
+postRouter.post("/" ,upload.single("image"), identifyUser,postController )
+postRouter.get('/',identifyUser,getPostController)
 
-postRouter.get('details/:postId', getPostDetails )
+postRouter.get('/details/:postId', identifyUser,getPostDetails )
 
 module.exports = postRouter
