@@ -48,6 +48,38 @@ async function postController (req,res){
   })
 }
 
+async function getPostController(req,res){
+
+  const token = req.cookies.token
+
+  if(!token){
+    return res.status(401).json({
+      message : "User is not authorised"
+    })
+  }
+
+  let decoded = ""
+  try {
+    decoded = await jwt.verify(token , process.env.JWT_SECRET)
+
+  } catch (err) {
+    return res.status(401).json({
+      message : "User is not authorised"
+    })
+  }
+
+  const userId = decoded.id
+  const posts = await postModel.find({
+    user : userId
+  })
+
+  res.status(200).json({
+    message : "post fetched succesfuly" , 
+    posts
+  })
+}
+
 module.exports = {
-  postController
+  postController , 
+  getPostController
 }
