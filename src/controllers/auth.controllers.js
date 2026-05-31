@@ -49,7 +49,8 @@ async function registerController (req,res){
   const token = await jwt.sign({
     // isem user ka data hona chahiye or unique hi ho 
 
-    id: user._id
+    id: user._id,
+    username : user.username 
   }, process.env.JWT_SECRET, {expiresIn: "4d"})
 
   res.cookie("token", token)
@@ -97,7 +98,8 @@ async function loginController (req,res){
 
   const token = await jwt.sign({
     // isem user ka data hona chahiye or unique hi ho 
-    id: user._id
+    id: user._id,
+    username : user.username
   }, process.env.JWT_SECRET, {expiresIn: "4d"})
 
   res.cookie("token", token)

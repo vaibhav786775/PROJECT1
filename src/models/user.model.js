@@ -31,7 +31,8 @@ const userSchema = new mongoose.Schema({
   pofileImage :{
     type :  String,
     default : "https://www.dreamstime.com/illustration/default-user.html"
-    }
+    } 
+  
 })
 
 const userModel = mongoose.model("users", userSchema)
